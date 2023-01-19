@@ -75,10 +75,13 @@ public class GamePanel extends JPanel implements ActionListener{
                 break;
             case 'D':
                 y[0] = y[0] + UNIT_SIZE;
+                break;
             case 'L':
                 x[0] = x[0] - UNIT_SIZE;
+                break;
             case 'R':
                 x[0] = x[0] + UNIT_SIZE;
+                break;
         }
         
     }
@@ -94,6 +97,7 @@ public class GamePanel extends JPanel implements ActionListener{
         }
         if ((x[0] < 0) || x[0] >= SCREEN_WIDTH){
             running = false;
+            
         }
         if ((y[0] < 0) || y[0] >= SCREEN_HEIGHT){
             running = false;
@@ -117,7 +121,31 @@ public class GamePanel extends JPanel implements ActionListener{
     public class MyKeyAdapter extends KeyAdapter{
         @Override
         public void keyPressed(KeyEvent e){
-
+            switch(e.getKeyCode()){
+            case KeyEvent.VK_LEFT:
+                if (direction != 'R'){
+                    direction = 'L';
+                }
+               
+                break;
+            case KeyEvent.VK_RIGHT:
+                if (direction != 'L'){
+                    direction = 'R';
+                }
+                break;
+            case KeyEvent.VK_UP:
+                if (direction != 'D'){
+                    direction = 'U';
+                }
+                break;
+            case KeyEvent.VK_DOWN:
+                if (direction != 'U'){
+                    direction = 'D';
+                }
+                break;
+            
+                
+            }
         }
     }
 }
