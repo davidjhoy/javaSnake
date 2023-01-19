@@ -9,7 +9,7 @@ public class GamePanel extends JPanel implements ActionListener{
     static final int SCREEN_HEIGHT = 600;
     static final int UNIT_SIZE = 25;
     static final int GAME_UNITS = (SCREEN_WIDTH * SCREEN_HEIGHT) / UNIT_SIZE;
-    static final int DELAY = 75;
+    static final int DELAY = 80;
     final int x[] = new int[GAME_UNITS];
     final int y[] = new int[GAME_UNITS];
     int bodyParts = 6;
@@ -40,22 +40,31 @@ public class GamePanel extends JPanel implements ActionListener{
         draw(g);
     }
     public void draw(Graphics g){
-        g.setColor(Color.white);
-        for (int i = 0; i < SCREEN_HEIGHT/UNIT_SIZE; i++){
-            g.drawLine(i*UNIT_SIZE, 0, i*UNIT_SIZE, SCREEN_HEIGHT);
-            g.drawLine(0, i*UNIT_SIZE, SCREEN_WIDTH, i*UNIT_SIZE);
-        }
-        g.setColor(Color.red);
-        g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
-
-        for (int i  = 0; i < bodyParts; i++){
-            if (i==0){
-                g.setColor(Color.green);
-                g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
-            }else{
-                g.setColor(Color.orange);
-                g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
+        if (running){
+            g.setColor(Color.white);
+            for (int i = 0; i < SCREEN_HEIGHT/UNIT_SIZE; i++){
+                g.drawLine(i*UNIT_SIZE, 0, i*UNIT_SIZE, SCREEN_HEIGHT);
+                g.drawLine(0, i*UNIT_SIZE, SCREEN_WIDTH, i*UNIT_SIZE);
             }
+            g.setColor(Color.red);
+            g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
+
+            for (int i  = 0; i < bodyParts; i++){
+
+                if (i==0){
+                    g.setColor(Color.green);
+                    g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
+                }else{
+                    g.setColor(Color.orange);
+                    g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
+                }
+            }
+            g.setColor(Color.red);
+            g.setFont(new Font("Ink Free", Font.BOLD, 20));
+            FontMetrics metrics = getFontMetrics(g.getFont());
+            g.drawString("Score: " + applesEaten,(SCREEN_WIDTH - metrics.stringWidth("Score: " + applesEaten))/2, g.getFont().getSize());
+        }else{
+            gameOver(g);
         }
     }
     public void newApple(){
@@ -64,7 +73,7 @@ public class GamePanel extends JPanel implements ActionListener{
         
     }
     public void move( ){
-        
+      
         for (int i = bodyParts; i > 0; i--){
             x[i] = x[i-1];
             y[i] = y[i-1];
@@ -86,18 +95,22 @@ public class GamePanel extends JPanel implements ActionListener{
         
     }
     public void checkApple(){
-
+        if((x[0] == appleX) && (y[0] == appleY)){
+            bodyParts++;
+            applesEaten++;
+            newApple();
+        }
     }
     public void checkCollisions(){
-        
+       
         for (int i = bodyParts; i > 0; i--){
-            if((x[0] ==x[i]) && (y[0] == y[i])){
+            if((x[0] == x[i]) && (y[0] == y[i])){
                 running = false;
             }
         }
         if ((x[0] < 0) || x[0] >= SCREEN_WIDTH){
             running = false;
-            
+        
         }
         if ((y[0] < 0) || y[0] >= SCREEN_HEIGHT){
             running = false;
@@ -108,7 +121,15 @@ public class GamePanel extends JPanel implements ActionListener{
 
     }
     public void gameOver(Graphics g){
+        g.setColor(Color.red);
+        g.setFont(new Font("Ink Free", Font.BOLD, 50));
+        FontMetrics metrics = getFontMetrics(g.getFont());
+        g.drawString("Game Over",(SCREEN_WIDTH - metrics.stringWidth("Gamve Over"))/2, SCREEN_HEIGHT /2 );
 
+        g.setColor(Color.red);
+        g.setFont(new Font("Ink Free", Font.BOLD, 20));
+        FontMetrics metrics1 = getFontMetrics(g.getFont());
+        g.drawString("Score: " + applesEaten,(SCREEN_WIDTH - metrics1.stringWidth("Score: " + applesEaten))/2, g.getFont().getSize());
     }
     public void actionPerformed(ActionEvent e){
         if (running){
@@ -125,22 +146,28 @@ public class GamePanel extends JPanel implements ActionListener{
             case KeyEvent.VK_LEFT:
                 if (direction != 'R'){
                     direction = 'L';
+                    
                 }
                
                 break;
             case KeyEvent.VK_RIGHT:
                 if (direction != 'L'){
                     direction = 'R';
+                   
                 }
                 break;
             case KeyEvent.VK_UP:
                 if (direction != 'D'){
                     direction = 'U';
+                
                 }
                 break;
             case KeyEvent.VK_DOWN:
+               
                 if (direction != 'U'){
                     direction = 'D';
+                   
+                    
                 }
                 break;
             
